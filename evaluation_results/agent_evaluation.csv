@@ -1,0 +1,6 @@
+test_id,question,execution_success,result_correct,insight_success,attempts,latency_seconds,error
+T01,How many total orders are there?,True,True,False,1,2.71,
+T02,What is the total order amount for each city?,True,True,False,1,1.65,
+T03,Which store has the maximum number of rejected orders?,True,True,False,1,3.93,
+T04,Show the average order value for each store.,True,True,False,1,1.85,
+T05,What percentage of orders were rejected in each city?,True,True,False,1,2.63,
