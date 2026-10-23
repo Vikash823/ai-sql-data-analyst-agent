@@ -54,22 +54,104 @@ reference SQL results on a small synthetic dataset.
 These are preliminary SQL-only results, not
 production accuracy benchmarks.
 
+
 ## Local Setup
 
-1. Clone the repository.
-2. Create and activate a Python virtual environment.
-3. Install dependencies using requirements.txt.
-4. Create .env from .env.example.
-5. Configure PostgreSQL and create the sample orders table.
-6. Use a restricted read-only database role.
+### 1. Clone the Repository
 
-Start the backend:
+```bash
+git clone https://github.com/Vikash823/ai-sql-data-analyst-agent.git
+cd ai-sql-data-analyst-agent
+```
 
-    python -m uvicorn api:app --host 127.0.0.1 --port 8000
+### 2. Create a Python Virtual Environment
 
-Start the dashboard:
+Windows PowerShell:
 
-    python -m streamlit run dashboard.py
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+```
+
+### 3. Create the PostgreSQL Database
+
+Open pgAdmin and create a database named:
+
+`ai_sql_agent`
+
+Connect to this database as a PostgreSQL administrator.
+
+Open Query Tool and execute:
+
+`setup_database.sql`
+
+This script creates the `orders` table and inserts 10 synthetic records.
+
+**Note:** Run the setup script only on a fresh database to avoid duplicate sample orders.
+
+### 4. Create a Read-Only Database User
+
+Run the following commands in pgAdmin as an administrator:
+
+```sql
+CREATE ROLE ai_agent_reader
+WITH LOGIN PASSWORD 'replace_with_strong_password';
+
+GRANT CONNECT ON DATABASE ai_sql_agent
+TO ai_agent_reader;
+
+GRANT USAGE ON SCHEMA public
+TO ai_agent_reader;
+
+GRANT SELECT ON TABLE public.orders
+TO ai_agent_reader;
+```
+
+### 5. Configure Environment Variables
+
+Copy `.env.example` to `.env`:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Update `.env` with your PostgreSQL connection details, read-only user password, and Gemini API key.
+
+Never commit `.env` to GitHub.
+
+### 6. Start the FastAPI Backend
+
+```powershell
+python -m uvicorn api:app --host 127.0.0.1 --port 8000
+```
+
+API documentation:
+
+http://127.0.0.1:8000/docs
+
+### 7. Start the Streamlit Dashboard
+
+Open a second terminal:
+
+```powershell
+python -m streamlit run dashboard.py
+```
+
+Dashboard:
+
+http://localhost:8501
+
+### 8. Run Automated Evaluation
+
+```powershell
+python evaluate_agent.py
+```
+
+Evaluation results are saved to:
+
+`evaluation_results/agent_evaluation.csv`
+
 
 ## Example Questions
 
